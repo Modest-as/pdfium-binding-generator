@@ -45,7 +45,10 @@ namespace PdfiumBindingGenerator
             var parserOptions = driver.ParserOptions;
             parserOptions.AddIncludeDirs(includePath);
 
-            var module = options.AddModule("pdfium");
+            var module = options.AddModule("Pdfium");
+            module.SharedLibraryName = "pdfium";
+
+            module.OutputNamespace = "Pdfium";
 
             foreach (var file in Directory.GetFiles(includePath, "*.h"))
             {

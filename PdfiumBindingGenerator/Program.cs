@@ -22,19 +22,19 @@ namespace PdfiumBindingGenerator
                 throw new DirectoryNotFoundException(includeDir);
             }
 
-            ConsoleDriver.Run(new PdfLbrary(includeDir));
+            ConsoleDriver.Run(new PdfLibrary(includeDir));
 
             Console.ReadLine();
         }
     }
 
-    internal class PdfLbrary : ILibrary
+    internal class PdfLibrary : ILibrary
     {
-        private readonly string includePath;
+        private readonly string _includePath;
 
-        public PdfLbrary(string includePath)
+        public PdfLibrary(string includePath)
         {
-            this.includePath = includePath;
+            _includePath = includePath;
         }
  
         public void Setup(Driver driver)
@@ -43,14 +43,14 @@ namespace PdfiumBindingGenerator
             options.GeneratorKind = GeneratorKind.CSharp;
 
             var parserOptions = driver.ParserOptions;
-            parserOptions.AddIncludeDirs(includePath);
+            parserOptions.AddIncludeDirs(_includePath);
 
             var module = options.AddModule("Pdfium");
             module.SharedLibraryName = "pdfium";
 
             module.OutputNamespace = "Pdfium";
 
-            foreach (var file in Directory.GetFiles(includePath, "*.h"))
+            foreach (var file in Directory.GetFiles(_includePath, "*.h"))
             {
                 module.Headers.Add(file);
             }

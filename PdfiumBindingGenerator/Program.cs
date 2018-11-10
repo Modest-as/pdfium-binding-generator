@@ -1,13 +1,20 @@
 ﻿using System;
 using System.IO;
 using CppSharp;
-using CppSharp.AST;
-using CppSharp.Generators;
 
 namespace PdfiumBindingGenerator
 {
     public class Program
     {
+        private static readonly string[] Headers =
+        {
+            "fpdfview.h",
+            "fpdf_text.h",
+            "fpdf_save.h",
+            "fpdf_ppo.h",
+            "fpdf_edit.h",
+        };
+
         public static void Main(string[] args)
         {
             if (args.Length != 1)
@@ -22,44 +29,9 @@ namespace PdfiumBindingGenerator
                 throw new DirectoryNotFoundException(includeDir);
             }
 
-            ConsoleDriver.Run(new PdfLibrary(includeDir));
+            ConsoleDriver.Run(new PdfLibrary(includeDir, Headers));
 
             Console.ReadLine();
         }
-    }
-
-    internal class PdfLibrary : ILibrary
-    {
-        private readonly string _includePath;
-
-        public PdfLibrary(string includePath)
-        {
-            _includePath = includePath;
-        }
- 
-        public void Setup(Driver driver)
-        {
-            var options = driver.Options;
-            options.GeneratorKind = GeneratorKind.CSharp;
-
-            var parserOptions = driver.ParserOptions;
-            parserOptions.AddIncludeDirs(_includePath);
-
-            var module = options.AddModule("Pdfium");
-            module.SharedLibraryName = "pdfium";
-
-            module.OutputNamespace = "Pdfium";
-
-            foreach (var file in Directory.GetFiles(_includePath, "*.h"))
-            {
-                module.Headers.Add(file);
-            }
-        }
-
-        public void SetupPasses(Driver driver) { }
-
-        public void Preprocess(Driver driver, ASTContext ctx) { }
-
-        public void Postprocess(Driver driver, ASTContext ctx) { }
     }
 }
